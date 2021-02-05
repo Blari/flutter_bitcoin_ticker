@@ -1,7 +1,6 @@
 import 'package:bitcoin_ticker/utilities/constans.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'services/networking.dart';
 import 'coin_data.dart';
 import 'dart:io' show Platform;
 
@@ -13,6 +12,9 @@ class PriceScreen extends StatefulWidget {
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = 'USD';
   String url = 'https://rest.coinapi.io/v1/exchangerate/BTC/USD?apikey=$api';
+  String BTC;
+  String ETH;
+  String LTC;
 
   DropdownButton<String> androidDropDown() {
     List<DropdownMenuItem<String>> dropdownItems = [];
@@ -32,6 +34,7 @@ class _PriceScreenState extends State<PriceScreen> {
         setState(
           () {
             selectedCurrency = value;
+            getData();
           },
         ),
       },
@@ -55,9 +58,13 @@ class _PriceScreenState extends State<PriceScreen> {
   }
 
   Future getData() async {
-    NetworkHelper networkHelper = NetworkHelper(url);
-    var coinData = await networkHelper.getData();
-    print(coinData);
+    CoinData coinData = CoinData();
+    Map<String, String> coins = await coinData.getCoinData(selectedCurrency);
+    setState(() {
+      BTC = coins['BTC'];
+      ETH = coins['ETH'];
+      LTC = coins['LTC'];
+    });
   }
 
   @override
@@ -77,25 +84,77 @@ class _PriceScreenState extends State<PriceScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-            child: Card(
-              color: Colors.lightBlueAccent,
-              elevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-                child: Text(
-                  '1 BTC = ? USD',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
+          Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
+                  child: Card(
+                    color: Colors.lightBlueAccent,
+                    elevation: 5.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 28.0),
+                      child: Text(
+                        '1 BTC =  $BTC $selectedCurrency',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
+                  child: Card(
+                    color: Colors.lightBlueAccent,
+                    elevation: 5.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 28.0),
+                      child: Text(
+                        '1 ETH =  $ETH $selectedCurrency',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
+                  child: Card(
+                    color: Colors.lightBlueAccent,
+                    elevation: 5.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 28.0),
+                      child: Text(
+                        '1 LTC =  $LTC $selectedCurrency',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Container(
